@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pendaki Mirror - Reflecting the Peak</title>
+    <style>
+        /* --- RESET & ROOT STYLE --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0d0d0d;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ff3333;
+            border-radius: 4px;
+        }
+
+        body {
+            background-color: #0d0d0d;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        section {
+            padding: 100px 8% 80px 8%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* --- GLOBAL UTILITIES --- */
+        .section-title {
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 40px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -10px;
+            width: 60px;
+            height: 4px;
+            background-color: #ff3333;
+            box-shadow: 0 0 10px #ff3333;
+        }
+
+        /* --- HEADER / NAVIGATION (LAPTOP & HP) --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 8%;
+            background: rgba(13, 13, 13, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff3333;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(255, 51, 51, 0.3);
+        }
+
+        /* Navigasi Default (Laptop) */
+        nav {
+            display: flex;
+            align-items: center;
+        }
+
+        nav a {
+            color: #b3b3b3;
+            text-decoration: none;
+            margin-left: 25px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: 0.3s ease;
+        }
+
+        nav a:hover, nav a.active {
+            color: #ff3333;
+            text-shadow: 0 0 8px rgba(255, 51, 51, 0.5);
+        }
+
+        /* Tombol Menu HP (Hamburger) */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            z-index: 1100;
+        }
+
+        .menu-toggle span {
+            width: 28px;
+            height: 3px;
+            background-color: #ffffff;
+            border-radius: 2px;
+            transition: 0.3s ease;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 100vh;
+            align-items: center;
+            text-align: center;
+            background: radial-gradient(circle at center, #200000 0%, #0d0d0d 100%);
+            position: relative;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 320px;
+            height: 320px;
+            border: 6px solid #ff3333;
+            border-radius: 50%;
+            box-shadow: inset 0 0 20px rgba(255, 51, 51, 0.2), 0 0 40px rgba(255, 51, 51, 0.3);
+            opacity: 0.2;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-15px) scale(1.02); }
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 15px;
+            z-index: 10;
+            background: linear-gradient(to right, #ffffff, #ffb3b3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero h2 {
+            font-size: 1.5rem;
+            color: #ff3333;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            margin-bottom: 25px;
+            font-weight: 600;
+            z-index: 10;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: #cccccc;
+            margin-bottom: 40px;
+            max-width: 650px;
+            z-index: 10;
+            line-height: 1.7;
+        }
+
+        .btn-sponsor {
+            padding: 16px 40px;
+            background-color: #ff3333;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 50px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 6px 20px rgba(255, 51, 51, 0.4);
+            transition: 0.3s ease;
+            z-index: 10;
+        }
+
+        .btn-sponsor:hover {
+            background-color: #e02222;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 51, 51, 0.6);
+        }
+
+        .social-float {
+            position: absolute;
+            bottom: 40px;
+            display: flex;
+            gap: 20px;
+            z-index: 10;
+        }
+
+        .social-float a {
+            color: #b3b3b3;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 10px 22px;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .social-float a:hover {
+            color: #fff;
+            border-color: #ff3333;
+            background-color: rgba(255, 51, 51, 0.12);
+        }
+
+        /* --- ABOUT SECTION --- */
+        .about-container {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 50px;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .about-text p {
+            color: #cccccc;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+
+        .vision-mission {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: 0.3s ease;
+        }
+
+        .glass-card h3 {
+            color: #ff3333;
+            font-size: 1.3rem;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+
+        .glass-card ul {
+            list-style: none;
+        }
+
+        .glass-card li {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 10px;
+            color: #cccccc;
+            line-height: 1.6;
+        }
+
+        .glass-card li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #ff3333;
+            font-weight: bold;
+        }
+
+        /* --- TIMELINE SECTION --- */
+        .timeline-desc {
+            font-size: 1.1rem;
+            color: #cccccc;
+            max-width: 800px;
+            margin-bottom: 40px;
+            line-height: 1.7;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto; /* Memungkinkan geser kanan-kiri di layar HP kecil */
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            min-width: 700px; /* Menjaga ukuran data tabel tetap aman */
+        }
+
+        th {
+            background-color: rgba(255, 51, 51, 0.08);
+            color: #ffffff;
+            padding: 18px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            border-bottom: 2px solid rgba(255, 51, 51, 0.3);
+        }
+
+        td {
+            padding: 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #dddddd;
+        }
+
+        .badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .badge-completed { background: rgba(0, 230, 118, 0.15); color: #00e676; border: 1px solid rgba(0, 230, 118, 0.3); }
+        .badge-next { background: rgba(255, 145, 0, 0.15); color: #ff9100; border: 1px solid rgba(255, 145, 0, 0.3); }
+        .badge-upcoming { background: rgba(255, 255, 255, 0.05); color: #888888; border: 1px solid rgba(255, 255, 255, 0.1); }
+
+        /* --- GALLERY SECTION --- */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            aspect-ratio: 1 / 1;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: #141414;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .mirror-lens {
+            width: 90%;
+            height: 90%;
+            border-radius: 50%;
+            border: 4px solid #ff3333;
+            box-shadow: 0 0 20px rgba(255, 51, 51, 0.2), inset 0 0 30px rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            transition: 0.4s ease;
+            background: radial-gradient(circle at 30% 30%, #222 0%, #111 70%, #050505 100%);
+        }
+
+        .gallery-item:hover .mirror-lens {
+            transform: scale(1.04);
+            border-color: #ffffff;
+        }
+
+        .mirror-lens h4 { font-size: 1.3rem; margin-bottom: 8px; text-transform: uppercase; }
+        .mirror-lens p { font-size: 0.85rem; color: #ff3333; font-weight: bold; text-transform: uppercase; }
+
+        /* --- INTERACTIVE SPONSORSHIP CALCULATOR --- */
+        .sponsor-box {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 40px;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 40px;
+        }
+
+        .calc-options h3 { font-size: 1.3rem; margin-bottom: 20px; }
+        .checkbox-group { display: flex; flex-direction: column; gap: 15px; }
+
+        /* Jari-friendly touch card untuk layar sentuh HP */
+        .check-item {
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding: 18px 15px; /* Lebih tinggi untuk mempermudah tap jari di HP */
+            background: rgba(255,255,255,0.02);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .check-item input { position: absolute; opacity: 0; width: 0; height: 0; }
+        .checkmark { height: 24px; width: 24px; background-color: rgba(255,255,255,0.1); border-radius: 6px; margin-right: 15px; position: relative; flex-shrink: 0; }
+        .check-item input:checked ~ .checkmark { background-color: #ff3333; box-shadow: 0 0 10px #ff3333; }
+        .checkmark::after { content: ""; position: absolute; display: none; left: 9px; top: 5px; width: 5px; height: 10px; border: solid white; border-width: 0 2.5px 2.5px 0; transform: rotate(45deg); }
+        .check-item input:checked ~ .checkmark::after { display: block; }
+        .check-text { font-size: 1rem; color: #dddddd; }
+
+        .calc-result {
+            background: radial-gradient(circle at top right, #250505 0%, #111111 100%);
+            border: 1px solid rgba(255, 51, 51, 0.2);
+            border-radius: 16px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .package-name { font-size: 2.8rem; font-weight: 900; color: #ff3333; text-transform: uppercase; margin-bottom: 5px; text-shadow: 0 0 20px #ff333366; }
+        .package-price { font-size: 1.3rem; font-weight: 600; margin-bottom: 25px; }
+        .package-benefits-preview { font-size: 0.95rem; color: #aaaaaa; margin-bottom: 35px; line-height: 1.6; }
+
+        .btn-calc-wa {
+            width: 100%;
+            padding: 16px;
+            background-color: #ffffff;
+            color: #0d0d0d;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        .btn-calc-wa:hover { background-color: #ff3333; color: white; }
+
+        /* --- FOOTER --- */
+        footer {
+            background: #060606;
+            padding: 60px 8% 30px 8%;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 40px; margin-bottom: 40px; }
+        .footer-info h3 { font-size: 1.8rem; margin-bottom: 15px; text-transform: uppercase; }
+        .footer-info p { color: #999999; line-height: 1.7; max-width: 450px; }
+        .footer-contacts { display: flex; flex-direction: column; gap: 12px; justify-content: center; }
+        .contact-item { color: #cccccc; text-decoration: none; }
+        .contact-item span { color: #ff3333; margin-right: 10px; font-weight: bold; }
+        .footer-bottom { border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 25px; display: flex; justify-content: space-between; align-items: center; color: #666666; font-size: 0.9rem; }
+
+        /* --- 📱 LAYER RESPONSIF (MEDIA QUERIES HP & LAPTOP) 📱 --- */
+        @media (max-width: 968px) {
+            section { padding: 90px 6% 60px 6%; }
+            header { padding: 15px 6%; }
+            
+            .hero h1 { font-size: 2.6rem; }
+            .hero h2 { font-size: 1.1rem; letter-spacing: 4px; }
+            .hero p { font-size: 1rem; }
+
+            /* Perubahan Menjadi Menu Laci Navigasi Dropdown di HP */
+            .menu-toggle { display: flex; } /* Tampilkan tombol hamburger */
+            
+            nav {
+                display: none; /* Sembunyikan default menu laptop */
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: rgba(13, 13, 13, 0.95);
+                backdrop-filter: blur(15px);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                padding: 20px 0;
+                box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            }
+
+            nav.active { display: flex; } /* Muncul jika tombol ditekan */
+            nav a { margin: 12px 0; font-size: 1.1rem; text-align: center; width: 100%; }
+
+            /* Atur ulang Grid Layout 2 Kolom Laptop jadi 1 Kolom Vertikal di HP */
+            .about-container, .sponsor-box, .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 35px;
+            }
+
+            .sponsor-box { padding: 25px 20px; }
+            .calc-result { padding: 30px 20px; }
+            .footer-bottom { flex-direction: column; gap: 10px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">Pendaki Mirror</div>
+        <button class="menu-toggle" id="mobile-menu" aria-label="Buka Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <nav id="nav-menu">
+            <a href="#home" class="nav-link">Beranda</a>
+            <a href="#about" class="nav-link">Tentang Kami</a>
+            <a href="#timeline" class="nav-link">Jalur Ekspedisi</a>
+            <a href="#gallery" class="nav-link">Galeri</a>
+            <a href="#sponsorship" class="nav-link">Sponsor</a>
+        </nav>
+    </header>
+
+    <section class="hero" id="home">
+        <h1>Mirror Summit</h1>
+        <h2>Reflecting the Peak</h2>
+        <p>Eksplorasi kreativitas visual, dokumentasi outdoor estetik, dan ruang kolaborasi inovatif di puncak alam terbuka melalui medium lensa cermin cembung.</p>
+        <a href="#sponsorship" class="btn-sponsor">Mulai Kemitraan</a>
+
+        <div class="social-float">
+            <a href="https://www.instagram.com/pendakimirror/" target="_blank">Instagram</a>
+            <a href="https://www.tiktok.com/@pendaki.mirror" target="_blank">TikTok</a>
+        </div>
+    </section>
+
+    <section id="about">
+        <h2 class="section-title">Tentang Kami</h2>
+        <div class="about-container">
+            <div class="about-text">
+                <p>Pendaki Mirror adalah komunitas pendaki modern yang lahir dari keselarasan antara semangat eksplorasi alam, kebersamaan, dan kreativitas visual digital.</p>
+                <p>Kami tidak bergerak dalam aktivitas pendakian tradisional biasa, melainkan memadukan unsur seni, edukasi, dan dokumentasi sinematik yang kuat. Membawa media <strong>convex mirror</strong> ke puncak tertinggi adalah identitas kami dalam merefleksikan harmoni ikatan manusia dengan alam bebas.</p>
+            </div>
+            <div class="vision-mission">
+                <div class="glass-card">
+                    <h3>Visi</h3>
+                    <p style="margin: 0;">Menjadi wadah eksplorasi outdoor kreatif berskala nasional yang mengedepankan keamanan berkegiatan serta produksi karya visual bernilai seni tinggi.</p>
+                </div>
+                <div class="glass-card">
+                    <h3>Misi</h3>
+                    <ul>
+                        <li>Mengembangkan manajemen perjalanan pendakian yang aman dan terencana.</li>
+                        <li>Memproduksi konten kreatif estetik berbasis media refleksi cermin cembung.</li>
+                        <li>Menerapkan prinsip pelestarian alam lingkungan berkelanjutan (Leave No Trace).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="timeline">
+        <h2 class="section-title">Jalur Ekspedisi 2026</h2>
+        <p class="timeline-desc">Rangkaian peta rute perjalanan tim pendakian kreatif dalam membelah kabut dan merefleksikan keindahan puncak-puncak gunung ikonik di Indonesia.</p>
+        
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Gunung Eksplorasi</th>
+                        <th>Wilayah Lokasi</th>
+                        <th>Estimasi Ketinggian</th>
+                        <th>Status Progress</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Mt. Papandayan</strong></td>
+                        <td>Garut, Jawa Barat</td>
+                        <td>2.665 mdpl</td>
+                        <td><span class="badge badge-completed">✅ Selesai</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mt. Ciremai</strong></td>
+                        <td>Kuningan, Jawa Barat</td>
+                        <td>3.078 mdpl</td>
+                        <td><span class="badge badge-completed">✅ Selesai</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mt. Gede</strong></td>
+                        <td>Cianjur, Jawa Barat</td>
+                        <td>2.958 mdpl</td>
+                        <td><span class="badge badge-next">⏳ 27-28 Juni 2026</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mt. Cikuray</strong></td>
+                        <td>Garut, Jawa Barat</td>
+                        <td>2.821 mdpl</td>
+                        <td><span class="badge badge-upcoming">🔒 Rencana</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mt. Prau</strong></td>
+                        <td>Wonosobo, Jawa Tengah</td>
+                        <td>2.590 mdpl</td>
+                        <td><span class="badge badge-upcoming">🔒 Rencana</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mt. Slamet</strong></td>
+                        <td>Purbalingga, Jawa Tengah</td>
+                        <td>3.428 mdpl</td>
+                        <td><span class="badge badge-upcoming">🔒 Rencana</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mt. Merbabu</strong></td>
+                        <td>Boyolali, Jawa Tengah</td>
+                        <td>3.142 mdpl</td>
+                        <td><span class="badge badge-upcoming">🔒 Rencana</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section id="gallery">
+        <h2 class="section-title">Eksplorasi Galeri</h2>
+        <div class="gallery-grid">
+            <div class="gallery-item">
+                <div class="mirror-lens">
+                    <h4>Visual Refleksi</h4>
+                    <p>Instagram Konten</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <div class="mirror-lens">
+                    <h4>Sinematik</h4>
+                    <p>TikTok Reels</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <div class="mirror-lens">
+                    <h4>Dokumentasi</h4>
+                    <p>Komunitas</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="sponsorship">
+        <h2 class="section-title">Kemitraan & Sponsor</h2>
+        <p class="timeline-desc">Pilih target penempatan promosi digital marketing sesuai profil brand Anda menggunakan sistem simulasi kalkulator interaktif di bawah ini.</p>
+        
+        <div class="sponsor-box">
+            <div class="calc-options">
+                <h3>Pilih Kebutuhan Promosi Brand Anda:</h3>
+                <div class="checkbox-group">
+                    <label class="check-item">
+                        <input type="checkbox" class="benefit-check" value="500000" data-name="1x Instagram Story Ads">
+                        <span class="checkmark"></span>
+                        <span class="check-text">1x Publikasi Iklan Instagram Story Ads (+Rp 500k)</span>
+                    </label>
+                    <label class="check-item">
+                        <input type="checkbox" class="benefit-check" value="750000" data-name="Logo di Video Teaser">
+                        <span class="checkmark"></span>
+                        <span class="check-text">Penempatan Logo Khusus di Video Teaser Resmi (+Rp 750k)</span>
+                    </label>
+                    <label class="check-item">
+                        <input type="checkbox" class="benefit-check" value="1000000" data-name="3x Instagram Story Bundle">
+                        <span class="checkmark"></span>
+                        <span class="check-text">3x Instagram Story Ads Bundle (+Rp 1M)</span>
+                    </label>
+                    <label class="check-item">
+                        <input type="checkbox" class="benefit-check" value="1250000" data-name="Logo S di Poster Utama">
+                        <span class="checkmark"></span>
+                        <span class="check-text">Penempatan Logo Brand pada Banner Poster Utama (Ukuran S) (+Rp 1.25M)</span>
+                    </label>
+                    <label class="check-item">
+                        <input type="checkbox" class="benefit-check" value="3000000" data-name="Bronze Package (2 Gunung)">
+                        <span class="checkmark"></span>
+                        <span class="check-text">Paket Komplit Bronze — Kampanye Penuh di 2 Seri Gunung (+Rp 3M)</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="calc-result">
+                <h4>Rekomendasi Paket Kerja Sama</h4>
+                <div class="package-name" id="pkg-title">Custom</div>
+                <div class="package-price" id="pkg-price">Rp 0</div>
+                <div class="package-benefits-preview" id="pkg-list">Belum ada item promosi yang dipilih.</div>
+                <button class="btn-calc-wa" id="send-wa-btn">Kirim Ajuan Via WhatsApp</button>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-info">
+                <h3>Pendaki Mirror</h3>
+                <p>Menyatukan seni visual lensa cembung dengan megahnya cakrawala Indonesia. Kolaborasi cerdas, dokumentasi organik estetik berkualitas tinggi.</p>
+            </div>
+            <div class="footer-contacts">
+                <a href="#" class="contact-item"><span>📍</span> Kota Bandung, Jawa Barat, Indonesia</a>
+                <a href="https://wa.me/6289656267651" target="_blank" class="contact-item"><span>📞</span> 0896-5626-7651 (Hotline Kemitraan)</a>
+                <a href="https://www.instagram.com/pendakimirror/" target="_blank" class="contact-item"><span>📸</span> @pendakimirror</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div>&copy; 2026 Pendaki Mirror. All Rights Reserved.</div>
+            <div>Reflecting the Peak</div>
+        </div>
+    </footer>
+
+    <script>
+        // Fitur 1: Logika Hamburger Menu Klik di HP
+        const mobileMenuBtn = document.getElementById('mobile-menu');
+        const navMenu = document.getElementById('nav-menu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+        // Tutup menu otomatis jika salah satu link navigasi diklik (khusus HP)
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+            });
+        });
+
+        // Fitur 2: Sistem Otomatisasi Kalkulator Kemitraan
+        const checkboxes = document.querySelectorAll('.benefit-check');
+        const priceDisplay = document.getElementById('pkg-price');
+        const titleDisplay = document.getElementById('pkg-title');
+        const listDisplay = document.getElementById('pkg-list');
+        const waButton = document.getElementById('send-wa-btn');
+
+        function updateSponsorshipCalculator() {
+            let totalCost = 0;
+            let selectedItems = [];
+
+            checkboxes.forEach(box => {
+                if(box.checked) {
+                    totalCost += parseInt(box.value);
+                    selectedItems.push(box.getAttribute('data-name'));
+                }
+            });
+
+            priceDisplay.innerText = "Rp " + totalCost.toLocaleString('id-ID');
+
+            if (totalCost === 0) {
+                titleDisplay.innerText = "Custom";
+                listDisplay.innerText = "Belum ada item promosi yang dipilih.";
+            } else if (totalCost >= 3000000) {
+                titleDisplay.innerText = "Bronze Tier+";
+                listDisplay.innerText = "Item Terpilih: " + selectedItems.join(', ');
+            } else if (totalCost >= 1250000) {
+                titleDisplay.innerText = "Micro Premium";
+                listDisplay.innerText = "Item Terpilih: " + selectedItems.join(', ');
+            } else {
+                titleDisplay.innerText = "Micro Taktis";
+                listDisplay.innerText = "Item Terpilih: " + selectedItems.join(', ');
+            }
+        }
+
+        checkboxes.forEach(box => {
+            box.addEventListener('change', updateSponsorshipCalculator);
+        });
+
+        // Fitur 3: Pengirim Formulir via Integrasi WhatsApp Otomatis
+        waButton.addEventListener('click', function() {
+            let totalCost = priceDisplay.innerText;
+            let tierName = titleDisplay.innerText;
+            let itemsText = listDisplay.innerText;
+
+            if(totalCost === "Rp 0") {
+                alert("Silakan pilih minimal satu item promosi terlebih dahulu!");
+                return;
+            }
+
+            let textMessage = `Halo Admin Pendaki Mirror, kami tertarik menjadi mitra sponsor.%0A%0A` +
+                              `• Rekomendasi Paket: *${tierName}*%0A` +
+                              `• Total Nilai Investasi: *${totalCost}*%0A` +
+                              `• ${itemsText}%0A%0A` +
+                              `Mohon informasikan kelanjutan teknis kerja samanya. Terima kasih!`;
+
+            window.open(`https://wa.me/6289656267651?text=${textMessage}`, '_blank');
+        });
+
+        // Fitur 4: ScrollSpy - Deteksi Posisi Menu Aktif Saat Di-scroll
+        const sections = document.querySelectorAll('section');
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= (sectionTop - 220)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
