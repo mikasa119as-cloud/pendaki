@@ -1,809 +1,1384 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pendaki Mirror - Reflecting the Peak</title>
-    <style>
-        /* --- RESET & ROOT STYLE --- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            scroll-behavior: smooth;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pendaki Mirror — Reflecting the Peak</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;scroll-behavior:smooth}
 
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0d0d0d;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #ff3333;
-            border-radius: 4px;
-        }
+:root{
+  --red:#e8321f;
+  --red-dim:rgba(232,50,31,0.18);
+  --red-glow:rgba(232,50,31,0.45);
+  --bg:#080808;
+  --bg2:#0f0f0f;
+  --bg3:#161616;
+  --white:#f0ede8;
+  --muted:#8a8680;
+  --border:rgba(240,237,232,0.07);
+  --font-display:'Bebas Neue',sans-serif;
+  --font-body:'DM Sans',sans-serif;
+  --font-mono:'Space Mono',monospace;
+}
 
-        body {
-            background-color: #0d0d0d;
-            color: #ffffff;
-            overflow-x: hidden;
-        }
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:#080808}
+::-webkit-scrollbar-thumb{background:var(--red);border-radius:3px}
 
-        section {
-            padding: 100px 8% 80px 8%;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
+html{scroll-behavior:smooth}
 
-        /* --- GLOBAL UTILITIES --- */
-        .section-title {
-            font-size: 2.5rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 40px;
-            position: relative;
-            display: inline-block;
-        }
+body{
+  background:var(--bg);
+  color:var(--white);
+  font-family:var(--font-body);
+  overflow-x:hidden;
+  cursor:none;
+}
 
-        .section-title::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            bottom: -10px;
-            width: 60px;
-            height: 4px;
-            background-color: #ff3333;
-            box-shadow: 0 0 10px #ff3333;
-        }
+/* CUSTOM CURSOR */
+#cursor{position:fixed;width:12px;height:12px;background:var(--red);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform 0.1s,width 0.2s,height 0.2s;mix-blend-mode:difference}
+#cursor-ring{position:fixed;width:36px;height:36px;border:1px solid rgba(232,50,31,0.5);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform 0.12s ease-out,width 0.2s,height 0.2s}
+body:hover #cursor{opacity:1}
 
-        /* --- HEADER / NAVIGATION (LAPTOP & HP) --- */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 8%;
-            background: rgba(13, 13, 13, 0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-        }
+/* NOISE OVERLAY */
+body::after{
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none;
+  z-index:9990;
+  opacity:0.4;
+}
 
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: #ff3333;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(255, 51, 51, 0.3);
-        }
+/* HEADER */
+header{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:22px 6%;
+  background:rgba(8,8,8,0);
+  transition:background 0.4s,padding 0.4s;
+  border-bottom:1px solid transparent;
+}
+header.scrolled{
+  background:rgba(8,8,8,0.92);
+  backdrop-filter:blur(20px);
+  padding:16px 6%;
+  border-bottom-color:var(--border);
+}
+.logo{
+  font-family:var(--font-display);
+  font-size:26px;
+  letter-spacing:3px;
+  color:var(--white);
+  text-decoration:none;
+}
+.logo span{color:var(--red)}
 
-        /* Navigasi Default (Laptop) */
-        nav {
-            display: flex;
-            align-items: center;
-        }
+nav{display:flex;align-items:center;gap:32px}
+nav a{
+  font-size:13px;font-weight:500;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--muted);
+  text-decoration:none;transition:color 0.2s;
+  position:relative;
+}
+nav a::after{
+  content:'';position:absolute;left:0;bottom:-4px;
+  width:0;height:1px;background:var(--red);
+  transition:width 0.3s;
+}
+nav a:hover,nav a.active{color:var(--white)}
+nav a:hover::after,nav a.active::after{width:100%}
 
-        nav a {
-            color: #b3b3b3;
-            text-decoration: none;
-            margin-left: 25px;
-            font-size: 0.95rem;
-            font-weight: 500;
-            transition: 0.3s ease;
-        }
+.header-cta{
+  padding:10px 24px;background:var(--red);color:var(--white);
+  font-size:12px;font-weight:500;letter-spacing:1.5px;
+  text-transform:uppercase;text-decoration:none;
+  border-radius:2px;transition:background 0.2s,transform 0.2s;
+}
+.header-cta:hover{background:#c5270e;transform:translateY(-1px)}
 
-        nav a:hover, nav a.active {
-            color: #ff3333;
-            text-shadow: 0 0 8px rgba(255, 51, 51, 0.5);
-        }
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
+.hamburger span{width:24px;height:1.5px;background:var(--white);transition:0.3s}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(4.5px,4.5px)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(4.5px,-4.5px)}
 
-        /* Tombol Menu HP (Hamburger) */
-        .menu-toggle {
-            display: none;
-            flex-direction: column;
-            gap: 6px;
-            cursor: pointer;
-            background: none;
-            border: none;
-            z-index: 1100;
-        }
+.mobile-nav{
+  display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:999;
+  background:rgba(8,8,8,0.98);
+  flex-direction:column;align-items:center;justify-content:center;gap:32px;
+}
+.mobile-nav.active{display:flex}
+.mobile-nav a{font-family:var(--font-display);font-size:48px;letter-spacing:4px;color:var(--white);text-decoration:none;transition:color 0.2s}
+.mobile-nav a:hover{color:var(--red)}
 
-        .menu-toggle span {
-            width: 28px;
-            height: 3px;
-            background-color: #ffffff;
-            border-radius: 2px;
-            transition: 0.3s ease;
-        }
+/* SECTIONS */
+section{padding:120px 6% 100px}
 
-        /* --- HERO SECTION --- */
-        .hero {
-            height: 100vh;
-            align-items: center;
-            text-align: center;
-            background: radial-gradient(circle at center, #200000 0%, #0d0d0d 100%);
-            position: relative;
-            padding-top: 0;
-            padding-bottom: 0;
-        }
+/* HERO */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;
+  justify-content:flex-end;padding-bottom:80px;
+  position:relative;overflow:hidden;
+}
 
-        .hero::before {
-            content: '';
-            position: absolute;
-            width: 320px;
-            height: 320px;
-            border: 6px solid #ff3333;
-            border-radius: 50%;
-            box-shadow: inset 0 0 20px rgba(255, 51, 51, 0.2), 0 0 40px rgba(255, 51, 51, 0.3);
-            opacity: 0.2;
-            animation: float 6s ease-in-out infinite;
-        }
+.hero-bg{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(232,50,31,0.08) 0%,transparent 60%);
+}
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-15px) scale(1.02); }
-        }
+/* Animated mountain silhouette */
+.mountain-svg{
+  position:absolute;bottom:0;left:0;right:0;
+  opacity:0.06;
+}
 
-        .hero h1 {
-            font-size: 4rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            margin-bottom: 15px;
-            z-index: 10;
-            background: linear-gradient(to right, #ffffff, #ffb3b3);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+.hero-eyebrow{
+  font-family:var(--font-mono);font-size:11px;letter-spacing:4px;
+  text-transform:uppercase;color:var(--red);margin-bottom:20px;
+  display:flex;align-items:center;gap:12px;
+}
+.hero-eyebrow::before{content:'';width:30px;height:1px;background:var(--red)}
 
-        .hero h2 {
-            font-size: 1.5rem;
-            color: #ff3333;
-            letter-spacing: 6px;
-            text-transform: uppercase;
-            margin-bottom: 25px;
-            font-weight: 600;
-            z-index: 10;
-        }
+.hero h1{
+  font-family:var(--font-display);
+  font-size:clamp(72px,11vw,160px);
+  line-height:0.9;letter-spacing:-1px;
+  margin-bottom:10px;color:var(--white);
+}
+.hero h1 em{
+  font-style:normal;
+  -webkit-text-stroke:1px rgba(240,237,232,0.3);
+  color:transparent;
+}
 
-        .hero p {
-            font-size: 1.15rem;
-            color: #cccccc;
-            margin-bottom: 40px;
-            max-width: 650px;
-            z-index: 10;
-            line-height: 1.7;
-        }
+.hero-sub{
+  font-size:clamp(16px,2vw,20px);color:var(--muted);
+  max-width:540px;line-height:1.7;margin:24px 0 40px;
+  font-weight:300;
+}
 
-        .btn-sponsor {
-            padding: 16px 40px;
-            background-color: #ff3333;
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            border-radius: 50px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 6px 20px rgba(255, 51, 51, 0.4);
-            transition: 0.3s ease;
-            z-index: 10;
-        }
+.hero-actions{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
 
-        .btn-sponsor:hover {
-            background-color: #e02222;
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(255, 51, 51, 0.6);
-        }
+.btn-primary{
+  padding:15px 36px;background:var(--red);color:var(--white);
+  font-size:12px;font-weight:500;letter-spacing:2px;
+  text-transform:uppercase;text-decoration:none;border-radius:2px;
+  display:inline-flex;align-items:center;gap:10px;
+  transition:background 0.2s,transform 0.2s,box-shadow 0.2s;
+}
+.btn-primary:hover{background:#c5270e;transform:translateY(-2px);box-shadow:0 12px 32px rgba(232,50,31,0.3)}
+.btn-primary svg{transition:transform 0.2s}
+.btn-primary:hover svg{transform:translateX(4px)}
 
-        .social-float {
-            position: absolute;
-            bottom: 40px;
-            display: flex;
-            gap: 20px;
-            z-index: 10;
-        }
+.btn-ghost{
+  padding:15px 36px;background:transparent;color:var(--white);
+  font-size:12px;font-weight:500;letter-spacing:2px;
+  text-transform:uppercase;text-decoration:none;
+  border:1px solid var(--border);border-radius:2px;
+  transition:border-color 0.2s,background 0.2s;
+}
+.btn-ghost:hover{border-color:rgba(240,237,232,0.3);background:rgba(240,237,232,0.04)}
 
-        .social-float a {
-            color: #b3b3b3;
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            padding: 10px 22px;
-            border-radius: 30px;
-            background: rgba(255, 255, 255, 0.02);
-        }
+.hero-stats{
+  display:flex;align-items:center;gap:40px;
+  margin-top:64px;padding-top:40px;
+  border-top:1px solid var(--border);
+  flex-wrap:wrap;
+}
+.stat-item{display:flex;flex-direction:column;gap:4px}
+.stat-num{font-family:var(--font-display);font-size:42px;color:var(--white);letter-spacing:1px}
+.stat-label{font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
 
-        .social-float a:hover {
-            color: #fff;
-            border-color: #ff3333;
-            background-color: rgba(255, 51, 51, 0.12);
-        }
+.hero-scroll{
+  position:absolute;right:6%;bottom:80px;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+}
+.scroll-line{width:1px;height:50px;background:linear-gradient(to bottom,transparent,var(--red));animation:scrollLine 2s ease-in-out infinite}
+@keyframes scrollLine{0%,100%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1)}}
+.scroll-text{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);writing-mode:vertical-rl}
 
-        /* --- ABOUT SECTION --- */
-        .about-container {
-            display: grid;
-            grid-template-columns: 1.2fr 1fr;
-            gap: 50px;
-            align-items: center;
-            margin-top: 20px;
-        }
+/* TICKER */
+.ticker-wrap{
+  background:var(--red);padding:12px 0;overflow:hidden;
+  white-space:nowrap;
+}
+.ticker-track{
+  display:inline-flex;animation:ticker 22s linear infinite;
+}
+.ticker-track:hover{animation-play-state:paused}
+.ticker-item{
+  font-family:var(--font-display);font-size:18px;letter-spacing:3px;
+  padding:0 32px;color:rgba(240,237,232,0.9);
+}
+.ticker-dot{color:rgba(240,237,232,0.4);font-size:8px;align-self:center}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
-        .about-text p {
-            color: #cccccc;
-            font-size: 1.1rem;
-            line-height: 1.8;
-            margin-bottom: 20px;
-            text-align: justify;
-        }
+/* ABOUT */
+.about-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;
+}
+.section-label{
+  font-family:var(--font-mono);font-size:11px;letter-spacing:4px;
+  text-transform:uppercase;color:var(--red);margin-bottom:16px;
+  display:flex;align-items:center;gap:10px;
+}
+.section-label::before{content:'[';opacity:0.5}
+.section-label::after{content:']';opacity:0.5}
 
-        .vision-mission {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
+.section-title{
+  font-family:var(--font-display);
+  font-size:clamp(42px,6vw,80px);
+  line-height:0.95;letter-spacing:1px;
+  color:var(--white);margin-bottom:24px;
+}
 
-        .glass-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            transition: 0.3s ease;
-        }
+.about-body{
+  font-size:16px;color:var(--muted);line-height:1.8;font-weight:300;
+  margin-bottom:32px;
+}
+.about-body strong{color:var(--white);font-weight:500}
 
-        .glass-card h3 {
-            color: #ff3333;
-            font-size: 1.3rem;
-            text-transform: uppercase;
-            margin-bottom: 12px;
-            letter-spacing: 1px;
-        }
+.vm-cards{display:flex;flex-direction:column;gap:1px;background:var(--border)}
+.vm-card{
+  background:var(--bg2);padding:28px 32px;
+  transition:background 0.2s;
+}
+.vm-card:hover{background:var(--bg3)}
+.vm-card h4{
+  font-family:var(--font-mono);font-size:11px;letter-spacing:3px;
+  text-transform:uppercase;color:var(--red);margin-bottom:12px;
+}
+.vm-card p,.vm-card li{font-size:14px;color:var(--muted);line-height:1.7}
+.vm-card ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.vm-card li{padding-left:16px;position:relative}
+.vm-card li::before{content:'—';position:absolute;left:0;color:var(--red)}
 
-        .glass-card ul {
-            list-style: none;
-        }
+/* COUNTER */
+.counter-strip{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border:1px solid var(--border);
+  margin:80px 0;
+}
+.counter-cell{
+  padding:40px 32px;border-right:1px solid var(--border);
+  text-align:center;
+}
+.counter-cell:last-child{border-right:none}
+.counter-num{
+  font-family:var(--font-display);font-size:56px;color:var(--white);
+  display:block;letter-spacing:2px;
+}
+.counter-num span{color:var(--red)}
+.counter-desc{font-size:12px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:4px}
 
-        .glass-card li {
-            position: relative;
-            padding-left: 20px;
-            margin-bottom: 10px;
-            color: #cccccc;
-            line-height: 1.6;
-        }
+/* EXPEDITION MAP / TIMELINE */
+.timeline-header{display:grid;grid-template-columns:1fr 1fr;gap:60px;margin-bottom:60px;align-items:end}
 
-        .glass-card li::before {
-            content: '✓';
-            position: absolute;
-            left: 0;
-            color: #ff3333;
-            font-weight: bold;
-        }
+.expedition-list{display:flex;flex-direction:column;gap:0}
+.exp-item{
+  display:grid;
+  grid-template-columns:60px 1fr auto auto;
+  align-items:center;gap:20px;
+  padding:22px 0;
+  border-bottom:1px solid var(--border);
+  transition:background 0.2s;
+  position:relative;
+  cursor:pointer;
+}
+.exp-item::after{
+  content:'';position:absolute;left:0;right:0;top:0;bottom:0;
+  background:var(--bg3);opacity:0;transition:opacity 0.2s;z-index:-1;
+}
+.exp-item:hover::after{opacity:1}
+.exp-num{
+  font-family:var(--font-mono);font-size:11px;color:var(--muted);letter-spacing:1px;
+}
+.exp-main h4{font-size:16px;font-weight:500;color:var(--white);margin-bottom:3px}
+.exp-main p{font-size:12px;color:var(--muted)}
+.exp-elev{
+  font-family:var(--font-mono);font-size:13px;color:var(--muted);text-align:right;
+}
+.badge{
+  padding:5px 12px;border-radius:2px;font-size:10px;
+  font-weight:500;letter-spacing:1.5px;text-transform:uppercase;
+  font-family:var(--font-mono);
+}
+.badge-done{background:rgba(34,197,94,0.1);color:#4ade80;border:1px solid rgba(74,222,128,0.2)}
+.badge-next{background:rgba(250,176,5,0.1);color:#fbbf24;border:1px solid rgba(251,191,36,0.2);animation:pulse-badge 2s ease-in-out infinite}
+.badge-plan{background:rgba(240,237,232,0.04);color:var(--muted);border:1px solid var(--border)}
+@keyframes pulse-badge{0%,100%{opacity:1}50%{opacity:0.6}}
 
-        /* --- TIMELINE SECTION --- */
-        .timeline-desc {
-            font-size: 1.1rem;
-            color: #cccccc;
-            max-width: 800px;
-            margin-bottom: 40px;
-            line-height: 1.7;
-        }
+/* PROGRESS BAR */
+.progress-section{
+  background:var(--bg2);border:1px solid var(--border);
+  padding:40px;margin-top:40px;border-radius:2px;
+}
+.progress-header{display:flex;justify-content:space-between;margin-bottom:20px}
+.progress-title{font-family:var(--font-mono);font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--white)}
+.progress-count{font-family:var(--font-mono);font-size:12px;color:var(--red)}
+.progress-bar-wrap{
+  height:4px;background:rgba(240,237,232,0.06);border-radius:2px;
+  overflow:hidden;
+}
+.progress-bar-fill{
+  height:100%;background:linear-gradient(90deg,var(--red),#ff7043);
+  border-radius:2px;transition:width 1.2s ease;width:0;
+}
 
-        .table-responsive {
-            width: 100%;
-            overflow-x: auto; /* Memungkinkan geser kanan-kiri di layar HP kecil */
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 12px;
-            -webkit-overflow-scrolling: touch;
-        }
+/* GALLERY */
+.gallery-header{
+  display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:40px;
+}
+.gallery-grid{
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr;
+  grid-template-rows:280px 280px;
+  gap:3px;
+}
+.gallery-item{
+  background:var(--bg3);overflow:hidden;
+  position:relative;cursor:pointer;
+}
+.gallery-item.large{grid-row:1/3}
+.gallery-item::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(to bottom,transparent 40%,rgba(8,8,8,0.9) 100%);
+  z-index:1;opacity:0;transition:opacity 0.3s;
+}
+.gallery-item:hover::before{opacity:1}
+.gallery-info{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:24px;z-index:2;
+  transform:translateY(8px);opacity:0;transition:all 0.3s;
+}
+.gallery-item:hover .gallery-info{transform:translateY(0);opacity:1}
+.gallery-info h4{font-family:var(--font-display);font-size:24px;letter-spacing:2px;margin-bottom:4px}
+.gallery-info p{font-size:11px;color:var(--red);letter-spacing:2px;text-transform:uppercase;font-family:var(--font-mono)}
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-            min-width: 700px; /* Menjaga ukuran data tabel tetap aman */
-        }
+/* Mirror visual placeholder */
+.mirror-placeholder{
+  width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+  background:var(--bg3);
+}
+.mirror-circle{
+  width:min(65%,180px);aspect-ratio:1;
+  border-radius:50%;
+  border:2px solid rgba(232,50,31,0.3);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;
+  transition:border-color 0.3s;
+}
+.gallery-item:hover .mirror-circle{border-color:var(--red)}
+.mirror-circle::before{
+  content:'';position:absolute;
+  width:85%;height:85%;border-radius:50%;
+  border:1px solid rgba(232,50,31,0.15);
+}
+.mirror-inner{
+  text-align:center;
+}
+.mirror-inner span{
+  font-family:var(--font-display);
+  font-size:clamp(20px,3vw,38px);
+  letter-spacing:2px;display:block;
+}
+.mirror-inner small{
+  font-size:9px;color:var(--red);letter-spacing:3px;text-transform:uppercase;
+  font-family:var(--font-mono);
+}
 
-        th {
-            background-color: rgba(255, 51, 51, 0.08);
-            color: #ffffff;
-            padding: 18px;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-            border-bottom: 2px solid rgba(255, 51, 51, 0.3);
-        }
+/* INSTAGRAM EMBED SECTION */
+.social-proof{
+  display:grid;grid-template-columns:1fr 1fr;gap:60px;
+  align-items:center;
+  background:var(--bg2);border:1px solid var(--border);
+  padding:60px;margin-top:40px;
+}
+.social-text h3{font-family:var(--font-display);font-size:48px;line-height:1;margin-bottom:16px}
+.social-text p{font-size:14px;color:var(--muted);line-height:1.7}
+.social-links{display:flex;gap:16px;margin-top:28px}
+.social-link{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 20px;border:1px solid var(--border);
+  font-size:12px;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--white);text-decoration:none;transition:all 0.2s;
+  font-family:var(--font-mono);
+}
+.social-link:hover{border-color:var(--red);color:var(--red)}
+.social-link svg{width:16px;height:16px;flex-shrink:0}
+.social-stats{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.s-stat{
+  background:var(--bg3);padding:28px;
+  border:1px solid var(--border);
+}
+.s-stat-num{font-family:var(--font-display);font-size:44px;color:var(--red);display:block;letter-spacing:2px}
+.s-stat-label{font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:4px}
 
-        td {
-            padding: 18px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            color: #dddddd;
-        }
+/* SPONSORSHIP */
+.sponsor-hero{
+  text-align:center;margin-bottom:60px;
+}
+.sponsor-packages{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+  background:var(--border);margin-bottom:1px;
+}
+.pkg-card{
+  background:var(--bg2);padding:40px 32px;position:relative;
+  transition:background 0.2s;
+}
+.pkg-card:hover{background:var(--bg3)}
+.pkg-card.featured{
+  background:var(--red);
+}
+.pkg-card.featured:hover{background:#c5270e}
+.pkg-tier{
+  font-family:var(--font-mono);font-size:11px;letter-spacing:3px;
+  text-transform:uppercase;margin-bottom:16px;
+}
+.pkg-card.featured .pkg-tier{color:rgba(240,237,232,0.7)}
+.pkg-card:not(.featured) .pkg-tier{color:var(--red)}
+.pkg-name{font-family:var(--font-display);font-size:48px;letter-spacing:2px;margin-bottom:8px}
+.pkg-price{font-size:28px;font-weight:300;margin-bottom:28px;padding-bottom:28px;border-bottom:1px solid var(--border)}
+.pkg-card.featured .pkg-price{border-bottom-color:rgba(240,237,232,0.2)}
+.pkg-price sub{font-size:14px;opacity:0.6}
+.pkg-perks{list-style:none;display:flex;flex-direction:column;gap:12px;margin-bottom:36px}
+.pkg-perks li{font-size:13px;color:var(--muted);display:flex;align-items:flex-start;gap:10px}
+.pkg-card.featured .pkg-perks li{color:rgba(240,237,232,0.8)}
+.pkg-perks li::before{content:'✓';color:var(--red);font-weight:700;flex-shrink:0;margin-top:1px}
+.pkg-card.featured .pkg-perks li::before{color:rgba(240,237,232,0.9)}
+.pkg-badge{
+  position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+  background:var(--white);color:var(--bg);
+  font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  padding:6px 16px;font-family:var(--font-mono);
+}
+.btn-pkg{
+  width:100%;padding:14px;
+  font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;
+  border:1px solid var(--border);background:transparent;
+  color:var(--white);cursor:pointer;transition:all 0.2s;font-family:var(--font-mono);
+}
+.btn-pkg:hover{background:var(--white);color:var(--bg);border-color:var(--white)}
+.pkg-card.featured .btn-pkg{
+  background:rgba(240,237,232,0.15);border-color:rgba(240,237,232,0.4);color:var(--white);
+}
+.pkg-card.featured .btn-pkg:hover{background:var(--white);color:var(--red)}
 
-        .badge {
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
+/* CUSTOM CALCULATOR */
+.calc-section{
+  background:var(--bg2);border:1px solid var(--border);
+  padding:50px;margin-top:1px;
+}
+.calc-title{
+  font-family:var(--font-mono);font-size:12px;letter-spacing:3px;
+  text-transform:uppercase;color:var(--muted);margin-bottom:32px;
+}
+.calc-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:50px}
+.calc-items{display:flex;flex-direction:column;gap:0}
+.calc-item{
+  display:flex;align-items:center;gap:16px;
+  padding:16px 0;border-bottom:1px solid var(--border);cursor:pointer;
+}
+.calc-item:last-child{border-bottom:none}
+.calc-checkbox{
+  width:20px;height:20px;border:1px solid var(--border);
+  border-radius:2px;background:transparent;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.15s;
+}
+.calc-checkbox.checked{background:var(--red);border-color:var(--red)}
+.calc-checkbox.checked::after{content:'';display:block;width:5px;height:9px;border:2px solid white;border-top:none;border-left:none;transform:rotate(45deg) translate(-1px,-1px)}
+.calc-item-text{flex:1;font-size:13px;color:var(--muted)}
+.calc-item-price{font-family:var(--font-mono);font-size:12px;color:var(--white)}
 
-        .badge-completed { background: rgba(0, 230, 118, 0.15); color: #00e676; border: 1px solid rgba(0, 230, 118, 0.3); }
-        .badge-next { background: rgba(255, 145, 0, 0.15); color: #ff9100; border: 1px solid rgba(255, 145, 0, 0.3); }
-        .badge-upcoming { background: rgba(255, 255, 255, 0.05); color: #888888; border: 1px solid rgba(255, 255, 255, 0.1); }
+.calc-output{
+  display:flex;flex-direction:column;justify-content:space-between;
+}
+.calc-result-top h4{font-family:var(--font-mono);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.calc-total{font-family:var(--font-display);font-size:64px;color:var(--white);letter-spacing:2px;line-height:1}
+.calc-total span{color:var(--red)}
+.calc-selected{font-size:12px;color:var(--muted);margin-top:12px;line-height:1.6}
+.calc-wa{
+  margin-top:40px;
+  padding:16px;background:var(--red);color:var(--white);
+  border:none;cursor:pointer;width:100%;
+  font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;
+  font-family:var(--font-mono);transition:background 0.2s,transform 0.2s;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.calc-wa:hover{background:#c5270e;transform:translateY(-2px)}
+.calc-wa svg{width:18px;height:18px;flex-shrink:0}
 
-        /* --- GALLERY SECTION --- */
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-        }
+/* TESTIMONIALS */
+.testimony-wrap{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;
+  background:var(--border);
+}
+.testimony-card{
+  background:var(--bg2);padding:36px;transition:background 0.2s;
+}
+.testimony-card:hover{background:var(--bg3)}
+.testimony-quote{
+  font-size:15px;color:var(--muted);line-height:1.8;
+  margin-bottom:24px;font-weight:300;font-style:italic;
+}
+.testimony-author{display:flex;align-items:center;gap:12px}
+.author-avatar{
+  width:40px;height:40px;border-radius:50%;
+  background:var(--red-dim);border:1px solid rgba(232,50,31,0.3);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-size:16px;color:var(--red);flex-shrink:0;
+}
+.author-name{font-size:13px;font-weight:500;color:var(--white)}
+.author-role{font-size:11px;color:var(--muted);letter-spacing:1px}
 
-        .gallery-item {
-            position: relative;
-            border-radius: 16px;
-            overflow: hidden;
-            aspect-ratio: 1 / 1;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            background: #141414;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+/* FAQ */
+.faq-list{max-width:800px;display:flex;flex-direction:column;gap:0}
+.faq-item{border-bottom:1px solid var(--border)}
+.faq-q{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:22px 0;cursor:pointer;
+  font-size:15px;font-weight:500;color:var(--white);
+  transition:color 0.2s;
+}
+.faq-q:hover{color:var(--red)}
+.faq-icon{
+  width:24px;height:24px;border:1px solid var(--border);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  transition:all 0.3s;color:var(--muted);font-size:14px;
+}
+.faq-item.open .faq-icon{background:var(--red);border-color:var(--red);color:var(--white);transform:rotate(45deg)}
+.faq-a{
+  max-height:0;overflow:hidden;transition:max-height 0.4s ease,padding 0.4s;
+  font-size:14px;color:var(--muted);line-height:1.8;
+}
+.faq-item.open .faq-a{max-height:200px;padding-bottom:20px}
 
-        .mirror-lens {
-            width: 90%;
-            height: 90%;
-            border-radius: 50%;
-            border: 4px solid #ff3333;
-            box-shadow: 0 0 20px rgba(255, 51, 51, 0.2), inset 0 0 30px rgba(0,0,0,0.8);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 20px;
-            transition: 0.4s ease;
-            background: radial-gradient(circle at 30% 30%, #222 0%, #111 70%, #050505 100%);
-        }
+/* FOOTER */
+footer{
+  background:var(--bg2);border-top:1px solid var(--border);
+  padding:80px 6% 40px;
+}
+.footer-top{
+  display:grid;grid-template-columns:2fr 1fr 1fr;gap:60px;
+  padding-bottom:60px;border-bottom:1px solid var(--border);
+  margin-bottom:40px;
+}
+.footer-brand .logo{display:block;margin-bottom:16px;font-size:28px}
+.footer-brand p{font-size:13px;color:var(--muted);line-height:1.7;max-width:340px;margin-bottom:28px}
+.footer-col h5{
+  font-family:var(--font-mono);font-size:10px;letter-spacing:3px;
+  text-transform:uppercase;color:var(--muted);margin-bottom:20px;
+}
+.footer-col a{display:block;font-size:13px;color:var(--muted);text-decoration:none;margin-bottom:10px;transition:color 0.2s}
+.footer-col a:hover{color:var(--white)}
+.footer-social{display:flex;gap:12px;margin-top:4px}
+.footer-social a{
+  width:38px;height:38px;border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--muted);text-decoration:none;transition:all 0.2s;
+  font-size:11px;letter-spacing:1px;font-family:var(--font-mono);
+}
+.footer-social a:hover{border-color:var(--red);color:var(--red)}
+.footer-bottom{
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:11px;color:var(--muted);letter-spacing:1px;font-family:var(--font-mono);
+}
 
-        .gallery-item:hover .mirror-lens {
-            transform: scale(1.04);
-            border-color: #ffffff;
-        }
+/* TOAST */
+.toast{
+  position:fixed;bottom:32px;right:32px;z-index:9000;
+  background:var(--bg2);border:1px solid var(--border);
+  padding:16px 20px;border-left:3px solid var(--red);
+  font-size:13px;color:var(--white);
+  transform:translateX(120%);transition:transform 0.4s;
+  max-width:320px;
+}
+.toast.show{transform:translateX(0)}
 
-        .mirror-lens h4 { font-size: 1.3rem; margin-bottom: 8px; text-transform: uppercase; }
-        .mirror-lens p { font-size: 0.85rem; color: #ff3333; font-weight: bold; text-transform: uppercase; }
+/* BACK TO TOP */
+#back-top{
+  position:fixed;bottom:32px;left:32px;z-index:9000;
+  width:42px;height:42px;background:var(--bg2);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--muted);transition:all 0.2s;
+  opacity:0;pointer-events:none;
+}
+#back-top.show{opacity:1;pointer-events:all}
+#back-top:hover{border-color:var(--red);color:var(--red)}
+#back-top svg{width:16px;height:16px}
 
-        /* --- INTERACTIVE SPONSORSHIP CALCULATOR --- */
-        .sponsor-box {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            padding: 40px;
-            display: grid;
-            grid-template-columns: 1.2fr 1fr;
-            gap: 40px;
-        }
+/* LOADING SCREEN */
+#loader{
+  position:fixed;inset:0;z-index:99999;
+  background:var(--bg);display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:20px;transition:opacity 0.6s;
+}
+.loader-logo{
+  font-family:var(--font-display);font-size:48px;letter-spacing:8px;
+  color:var(--white);opacity:0;animation:loaderFade 0.6s 0.3s forwards;
+}
+.loader-logo span{color:var(--red)}
+.loader-bar{width:200px;height:1px;background:var(--border)}
+.loader-fill{height:100%;background:var(--red);width:0;animation:loaderFill 1.4s ease forwards}
+@keyframes loaderFade{to{opacity:1}}
+@keyframes loaderFill{to{width:100%}}
 
-        .calc-options h3 { font-size: 1.3rem; margin-bottom: 20px; }
-        .checkbox-group { display: flex; flex-direction: column; gap: 15px; }
+/* ANIMATIONS */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity 0.7s,transform 0.7s}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:0.1s}
+.reveal-delay-2{transition-delay:0.2s}
+.reveal-delay-3{transition-delay:0.3s}
 
-        /* Jari-friendly touch card untuk layar sentuh HP */
-        .check-item {
-            display: flex;
-            align-items: center;
-            position: relative;
-            padding: 18px 15px; /* Lebih tinggi untuk mempermudah tap jari di HP */
-            background: rgba(255,255,255,0.02);
-            border-radius: 10px;
-            cursor: pointer;
-            transition: 0.2s ease;
-        }
+/* RESPONSIVE */
+@media(max-width:1024px){
+  .about-grid{grid-template-columns:1fr;gap:50px}
+  .counter-strip{grid-template-columns:repeat(2,1fr)}
+  .counter-cell{border-right:none;border-bottom:1px solid var(--border)}
+  .counter-cell:nth-child(odd){border-right:1px solid var(--border)}
+  .counter-cell:nth-last-child(-n+2){border-bottom:none}
+  .sponsor-packages{grid-template-columns:1fr}
+  .testimony-wrap{grid-template-columns:1fr}
+  .footer-top{grid-template-columns:1fr 1fr}
+  .footer-brand{grid-column:1/3}
+  .social-proof{grid-template-columns:1fr;gap:40px}
+  .gallery-grid{grid-template-columns:1fr 1fr;grid-template-rows:240px 240px 240px}
+  .gallery-item.large{grid-row:auto}
+  .calc-grid{grid-template-columns:1fr}
+}
 
-        .check-item input { position: absolute; opacity: 0; width: 0; height: 0; }
-        .checkmark { height: 24px; width: 24px; background-color: rgba(255,255,255,0.1); border-radius: 6px; margin-right: 15px; position: relative; flex-shrink: 0; }
-        .check-item input:checked ~ .checkmark { background-color: #ff3333; box-shadow: 0 0 10px #ff3333; }
-        .checkmark::after { content: ""; position: absolute; display: none; left: 9px; top: 5px; width: 5px; height: 10px; border: solid white; border-width: 0 2.5px 2.5px 0; transform: rotate(45deg); }
-        .check-item input:checked ~ .checkmark::after { display: block; }
-        .check-text { font-size: 1rem; color: #dddddd; }
-
-        .calc-result {
-            background: radial-gradient(circle at top right, #250505 0%, #111111 100%);
-            border: 1px solid rgba(255, 51, 51, 0.2);
-            border-radius: 16px;
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
-
-        .package-name { font-size: 2.8rem; font-weight: 900; color: #ff3333; text-transform: uppercase; margin-bottom: 5px; text-shadow: 0 0 20px #ff333366; }
-        .package-price { font-size: 1.3rem; font-weight: 600; margin-bottom: 25px; }
-        .package-benefits-preview { font-size: 0.95rem; color: #aaaaaa; margin-bottom: 35px; line-height: 1.6; }
-
-        .btn-calc-wa {
-            width: 100%;
-            padding: 16px;
-            background-color: #ffffff;
-            color: #0d0d0d;
-            border: none;
-            border-radius: 50px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: 0.3s ease;
-        }
-
-        .btn-calc-wa:hover { background-color: #ff3333; color: white; }
-
-        /* --- FOOTER --- */
-        footer {
-            background: #060606;
-            padding: 60px 8% 30px 8%;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 40px; margin-bottom: 40px; }
-        .footer-info h3 { font-size: 1.8rem; margin-bottom: 15px; text-transform: uppercase; }
-        .footer-info p { color: #999999; line-height: 1.7; max-width: 450px; }
-        .footer-contacts { display: flex; flex-direction: column; gap: 12px; justify-content: center; }
-        .contact-item { color: #cccccc; text-decoration: none; }
-        .contact-item span { color: #ff3333; margin-right: 10px; font-weight: bold; }
-        .footer-bottom { border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 25px; display: flex; justify-content: space-between; align-items: center; color: #666666; font-size: 0.9rem; }
-
-        /* --- 📱 LAYER RESPONSIF (MEDIA QUERIES HP & LAPTOP) 📱 --- */
-        @media (max-width: 968px) {
-            section { padding: 90px 6% 60px 6%; }
-            header { padding: 15px 6%; }
-            
-            .hero h1 { font-size: 2.6rem; }
-            .hero h2 { font-size: 1.1rem; letter-spacing: 4px; }
-            .hero p { font-size: 1rem; }
-
-            /* Perubahan Menjadi Menu Laci Navigasi Dropdown di HP */
-            .menu-toggle { display: flex; } /* Tampilkan tombol hamburger */
-            
-            nav {
-                display: none; /* Sembunyikan default menu laptop */
-                flex-direction: column;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                width: 100%;
-                background: rgba(13, 13, 13, 0.95);
-                backdrop-filter: blur(15px);
-                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-                padding: 20px 0;
-                box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-            }
-
-            nav.active { display: flex; } /* Muncul jika tombol ditekan */
-            nav a { margin: 12px 0; font-size: 1.1rem; text-align: center; width: 100%; }
-
-            /* Atur ulang Grid Layout 2 Kolom Laptop jadi 1 Kolom Vertikal di HP */
-            .about-container, .sponsor-box, .footer-grid {
-                grid-template-columns: 1fr;
-                gap: 35px;
-            }
-
-            .sponsor-box { padding: 25px 20px; }
-            .calc-result { padding: 30px 20px; }
-            .footer-bottom { flex-direction: column; gap: 10px; text-align: center; }
-        }
-    </style>
+@media(max-width:768px){
+  section{padding:90px 5% 70px}
+  header{padding:18px 5%}
+  nav,​.header-cta{display:none}
+  .hamburger{display:flex}
+  .hero h1{font-size:clamp(56px,14vw,96px)}
+  .hero-stats{gap:28px}
+  .stat-num{font-size:32px}
+  .timeline-header{grid-template-columns:1fr}
+  .exp-item{grid-template-columns:auto 1fr auto;gap:12px}
+  .exp-elev{display:none}
+  .counter-strip{grid-template-columns:1fr 1fr}
+  .footer-top{grid-template-columns:1fr}
+  .footer-brand{grid-column:auto}
+  .footer-bottom{flex-direction:column;gap:8px;text-align:center}
+  .gallery-grid{grid-template-columns:1fr;grid-template-rows:repeat(5,220px)}
+  .social-stats{grid-template-columns:1fr 1fr}
+  #cursor,#cursor-ring{display:none}
+  .hero-scroll{display:none}
+}
+</style>
 </head>
 <body>
 
-    <header>
-        <div class="logo">Pendaki Mirror</div>
-        <button class="menu-toggle" id="mobile-menu" aria-label="Buka Menu">
-            <span></span>
-            <span></span>
-            <span></span>
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-logo">PENDAKI <span>MIRROR</span></div>
+  <div class="loader-bar"><div class="loader-fill"></div></div>
+</div>
+
+<!-- CUSTOM CURSOR -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- BACK TO TOP -->
+<button id="back-top" aria-label="Kembali ke atas" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 12V4M4 7l4-4 4 4"/></svg>
+</button>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- MOBILE NAV -->
+<nav class="mobile-nav" id="mobileNav">
+  <a href="#home" class="mobile-link">Beranda</a>
+  <a href="#tentang" class="mobile-link">Tentang</a>
+  <a href="#ekspedisi" class="mobile-link">Ekspedisi</a>
+  <a href="#galeri" class="mobile-link">Galeri</a>
+  <a href="#sponsor" class="mobile-link">Sponsor</a>
+</nav>
+
+<!-- HEADER -->
+<header id="header">
+  <a href="#home" class="logo">PENDAKI <span>MIRROR</span></a>
+  <nav>
+    <a href="#home" class="nav-link active">Beranda</a>
+    <a href="#tentang" class="nav-link">Tentang</a>
+    <a href="#ekspedisi" class="nav-link">Ekspedisi</a>
+    <a href="#galeri" class="nav-link">Galeri</a>
+    <a href="#sponsor" class="nav-link">Sponsor</a>
+  </nav>
+  <a href="https://wa.me/6289656267652" target="_blank" class="header-cta">Hubungi Kami</a>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<!-- ▸ HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <svg class="mountain-svg" viewBox="0 0 1440 280" preserveAspectRatio="none" fill="none">
+    <path d="M0 280L240 120L360 180L520 60L680 160L820 40L960 140L1100 80L1260 160L1440 100V280H0Z" fill="#e8321f"/>
+  </svg>
+
+  <div class="hero-eyebrow reveal">Komunitas Pendaki Kreatif Indonesia</div>
+
+  <h1 class="reveal reveal-delay-1">
+    MIRROR<br><em>SUMMIT</em>
+  </h1>
+
+  <p class="hero-sub reveal reveal-delay-2">
+    Eksplorasi kreativitas visual, dokumentasi outdoor estetik, dan kolaborasi inovatif di puncak alam bebas melalui medium lensa cermin cembung.
+  </p>
+
+  <div class="hero-actions reveal reveal-delay-3">
+    <a href="#sponsor" class="btn-primary">
+      Mulai Kemitraan
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+    </a>
+    <a href="#tentang" class="btn-ghost">Pelajari Lebih</a>
+  </div>
+
+  <div class="hero-stats reveal">
+    <div class="stat-item">
+      <span class="stat-num" data-target="2">0</span>
+      <span class="stat-label">Ekspedisi Selesai</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num" data-target="7">0</span>
+      <span class="stat-label">Target Gunung 2026</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num" data-target="12">0</span>
+      <span class="stat-label">Anggota Aktif</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num" data-target="5000">0</span>
+      <span class="stat-label">Followers Sosmed</span>
+    </div>
+  </div>
+
+  <div class="hero-scroll">
+    <span class="scroll-text">Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap" aria-hidden="true">
+  <div class="ticker-track" id="ticker">
+    <span class="ticker-item">PAPANDAYAN</span><span class="ticker-dot">●</span>
+    <span class="ticker-item">CIREMAI</span><span class="ticker-dot">●</span>
+    <span class="ticker-item">GEDE</span><span class="ticker-dot">●</span>
+    <span class="ticker-item">CIKURAY</span><span class="ticker-dot">●</span>
+    <span class="ticker-item">PRAU</span><span class="ticker-dot">●</span>
+    <span class="ticker-item">SLAMET</span><span class="ticker-dot">●</span>
+    <span class="ticker-item">MERBABU</span><span class="ticker-dot">●</span>
+    <span class="ticker-item">REFLECTING THE PEAK</span><span class="ticker-dot">●</span>
+    <!-- duplicate for seamless loop -->
+    <span class="ticker-item">PAPANDAYAN</span><span class="ticker-dot">●</span>
+    <span class="ticker-item">CIREMAI</span><span class="ticker-dot">●</span>
+    <span class="ticker-item">GEDE</span><span class="ticker-dot">●</span>
+    <span class="ticker-item">CIKURAY</span><span class="ticker-dot">●</span>
+    <span class="ticker-item">PRAU</span><span class="ticker-dot">●</span>
+    <span class="ticker-item">SLAMET</span><span class="ticker-dot">●</span>
+    <span class="ticker-item">MERBABU</span><span class="ticker-dot">●</span>
+    <span class="ticker-item">REFLECTING THE PEAK</span><span class="ticker-dot">●</span>
+  </div>
+</div>
+
+<!-- ▸ TENTANG -->
+<section id="tentang">
+  <div class="about-grid">
+    <div>
+      <div class="section-label reveal">Tentang Kami</div>
+      <h2 class="section-title reveal reveal-delay-1">SIAPA<br>KAMI?</h2>
+      <p class="about-body reveal reveal-delay-2">
+        Pendaki Mirror adalah komunitas pendaki modern yang lahir dari keselarasan antara semangat eksplorasi alam, kebersamaan, dan <strong>kreativitas visual digital</strong>.
+      </p>
+      <p class="about-body reveal reveal-delay-3">
+        Kami memadukan unsur seni, edukasi, dan dokumentasi sinematik. Membawa media <strong>convex mirror</strong> ke puncak tertinggi adalah identitas kami dalam merefleksikan harmoni ikatan manusia dengan alam bebas.
+      </p>
+    </div>
+    <div>
+      <div class="vm-cards reveal">
+        <div class="vm-card">
+          <h4>Visi</h4>
+          <p>Menjadi wadah eksplorasi outdoor kreatif berskala nasional yang mengedepankan keamanan dan produksi karya visual bernilai seni tinggi.</p>
+        </div>
+        <div class="vm-card">
+          <h4>Misi</h4>
+          <ul>
+            <li>Manajemen perjalanan pendakian yang aman dan terencana</li>
+            <li>Konten kreatif estetik berbasis media refleksi cermin cembung</li>
+            <li>Prinsip pelestarian alam berkelanjutan (Leave No Trace)</li>
+          </ul>
+        </div>
+        <div class="vm-card">
+          <h4>Nilai Utama</h4>
+          <ul>
+            <li>Keselamatan di atas segalanya</li>
+            <li>Kreativitas tanpa batas di alam terbuka</li>
+            <li>Solidaritas dan kebersamaan</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="counter-strip reveal">
+    <div class="counter-cell">
+      <span class="counter-num"><span data-count="2">2</span><span style="color:var(--red)">×</span></span>
+      <div class="counter-desc">Gunung Ditaklukkan</div>
+    </div>
+    <div class="counter-cell">
+      <span class="counter-num"><span data-count="3078">3.078</span><span style="color:var(--red);font-size:28px">mdpl</span></span>
+      <div class="counter-desc">Tertinggi Dicapai</div>
+    </div>
+    <div class="counter-cell">
+      <span class="counter-num"><span data-count="100">100</span><span style="color:var(--red)">%</span></span>
+      <div class="counter-desc">Tingkat Keberhasilan</div>
+    </div>
+    <div class="counter-cell">
+      <span class="counter-num"><span data-count="0">0</span><span style="color:var(--red);font-size:28px">Insiden</span></span>
+      <div class="counter-desc">Kecelakaan Terjadi</div>
+    </div>
+  </div>
+</section>
+
+<!-- ▸ EKSPEDISI -->
+<section id="ekspedisi" style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <div class="timeline-header">
+    <div>
+      <div class="section-label reveal">Rute 2026</div>
+      <h2 class="section-title reveal reveal-delay-1">JALUR<br>EKSPEDISI</h2>
+    </div>
+    <div>
+      <p style="font-size:14px;color:var(--muted);line-height:1.8" class="reveal reveal-delay-2">
+        Peta rute perjalanan kreasi visual tim Pendaki Mirror — membelah kabut dan merefleksikan keindahan puncak ikonik Indonesia sepanjang 2026.
+      </p>
+    </div>
+  </div>
+
+  <div class="expedition-list reveal">
+    <div class="exp-item">
+      <span class="exp-num">01</span>
+      <div class="exp-main"><h4>Mt. Papandayan</h4><p>Garut, Jawa Barat</p></div>
+      <span class="exp-elev">2.665 mdpl</span>
+      <span class="badge badge-done">✓ Selesai</span>
+    </div>
+    <div class="exp-item">
+      <span class="exp-num">02</span>
+      <div class="exp-main"><h4>Mt. Ciremai</h4><p>Kuningan, Jawa Barat</p></div>
+      <span class="exp-elev">3.078 mdpl</span>
+      <span class="badge badge-done">✓ Selesai</span>
+    </div>
+    <div class="exp-item">
+      <span class="exp-num">03</span>
+      <div class="exp-main"><h4>Mt. Gede</h4><p>Cianjur, Jawa Barat</p></div>
+      <span class="exp-elev">2.958 mdpl</span>
+      <span class="badge badge-next">⏳ 27–28 Juni 2026</span>
+    </div>
+    <div class="exp-item">
+      <span class="exp-num">04</span>
+      <div class="exp-main"><h4>Mt. Cikuray</h4><p>Garut, Jawa Barat</p></div>
+      <span class="exp-elev">2.821 mdpl</span>
+      <span class="badge badge-plan">Rencana</span>
+    </div>
+    <div class="exp-item">
+      <span class="exp-num">05</span>
+      <div class="exp-main"><h4>Mt. Prau</h4><p>Wonosobo, Jawa Tengah</p></div>
+      <span class="exp-elev">2.590 mdpl</span>
+      <span class="badge badge-plan">Rencana</span>
+    </div>
+    <div class="exp-item">
+      <span class="exp-num">06</span>
+      <div class="exp-main"><h4>Mt. Slamet</h4><p>Purbalingga, Jawa Tengah</p></div>
+      <span class="exp-elev">3.428 mdpl</span>
+      <span class="badge badge-plan">Rencana</span>
+    </div>
+    <div class="exp-item">
+      <span class="exp-num">07</span>
+      <div class="exp-main"><h4>Mt. Merbabu</h4><p>Boyolali, Jawa Tengah</p></div>
+      <span class="exp-elev">3.142 mdpl</span>
+      <span class="badge badge-plan">Rencana</span>
+    </div>
+  </div>
+
+  <div class="progress-section reveal">
+    <div class="progress-header">
+      <span class="progress-title">Progress Ekspedisi 2026</span>
+      <span class="progress-count">2 dari 7 Gunung</span>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progressBar"></div>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-top:12px;font-family:var(--font-mono);letter-spacing:1px">28.6% selesai — Mt. Gede berikutnya 27 Juni 2026</p>
+  </div>
+</section>
+
+<!-- ▸ GALERI -->
+<section id="galeri">
+  <div class="gallery-header">
+    <div>
+      <div class="section-label reveal">Visual & Media</div>
+      <h2 class="section-title reveal reveal-delay-1">GALERI<br>EKSPLORASI</h2>
+    </div>
+    <div style="text-align:right" class="reveal reveal-delay-2">
+      <p style="font-size:13px;color:var(--muted)">@pendakimirror</p>
+      <p style="font-size:13px;color:var(--muted)">@pendaki.mirror</p>
+    </div>
+  </div>
+
+  <div class="gallery-grid reveal">
+    <div class="gallery-item large">
+      <div class="mirror-placeholder">
+        <div class="mirror-circle">
+          <div class="mirror-inner">
+            <span>VISUAL</span>
+            <small>Refleksi</small>
+          </div>
+        </div>
+      </div>
+      <div class="gallery-info">
+        <h4>Visual Refleksi</h4>
+        <p>Instagram Content</p>
+      </div>
+    </div>
+    <div class="gallery-item">
+      <div class="mirror-placeholder">
+        <div class="mirror-circle">
+          <div class="mirror-inner">
+            <span>SINE</span>
+            <small>Sinematik</small>
+          </div>
+        </div>
+      </div>
+      <div class="gallery-info">
+        <h4>Sinematik</h4>
+        <p>TikTok Reels</p>
+      </div>
+    </div>
+    <div class="gallery-item">
+      <div class="mirror-placeholder">
+        <div class="mirror-circle">
+          <div class="mirror-inner">
+            <span>DOCS</span>
+            <small>Dokumentasi</small>
+          </div>
+        </div>
+      </div>
+      <div class="gallery-info">
+        <h4>Dokumentasi</h4>
+        <p>Komunitas</p>
+      </div>
+    </div>
+    <div class="gallery-item">
+      <div class="mirror-placeholder">
+        <div class="mirror-circle">
+          <div class="mirror-inner">
+            <span>BTS</span>
+            <small>Behind the Scene</small>
+          </div>
+        </div>
+      </div>
+      <div class="gallery-info">
+        <h4>Behind the Scene</h4>
+        <p>Proses Kreatif</p>
+      </div>
+    </div>
+    <div class="gallery-item">
+      <div class="mirror-placeholder">
+        <div class="mirror-circle">
+          <div class="mirror-inner">
+            <span>PEAK</span>
+            <small>Puncak View</small>
+          </div>
+        </div>
+      </div>
+      <div class="gallery-info">
+        <h4>Summit Shots</h4>
+        <p>Puncak Terbaik</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="social-proof reveal">
+    <div class="social-text">
+      <h3>IKUTI<br>PERJALANAN<br>KAMI</h3>
+      <p>Dokumentasi lengkap, konten estetik, dan update real-time ekspedisi tersedia di platform sosial media kami.</p>
+      <div class="social-links">
+        <a href="https://www.instagram.com/pendakimirror/" target="_blank" class="social-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.8" fill="currentColor"/></svg>
+          Instagram
+        </a>
+        <a href="https://www.tiktok.com/@pendaki.mirror" target="_blank" class="social-link">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.68a8.18 8.18 0 0 0 4.78 1.52V6.73a4.85 4.85 0 0 1-1.01-.04z"/></svg>
+          TikTok
+        </a>
+      </div>
+    </div>
+    <div class="social-stats reveal reveal-delay-1">
+      <div class="s-stat">
+        <span class="s-stat-num">5K+</span>
+        <div class="s-stat-label">Total Followers</div>
+      </div>
+      <div class="s-stat">
+        <span class="s-stat-num">50+</span>
+        <div class="s-stat-label">Konten Diterbitkan</div>
+      </div>
+      <div class="s-stat">
+        <span class="s-stat-num">200K+</span>
+        <div class="s-stat-label">Total Tayangan</div>
+      </div>
+      <div class="s-stat">
+        <span class="s-stat-num">8.5%</span>
+        <div class="s-stat-label">Engagement Rate</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ▸ SPONSOR -->
+<section id="sponsor" style="background:var(--bg2);border-top:1px solid var(--border)">
+  <div class="sponsor-hero">
+    <div class="section-label reveal" style="justify-content:center">Kemitraan & Sponsor</div>
+    <h2 class="section-title reveal reveal-delay-1" style="font-size:clamp(52px,8vw,110px)">SPONSOR<br><em style="font-style:normal;-webkit-text-stroke:1px rgba(240,237,232,0.2);color:transparent">KAMI</em></h2>
+    <p style="font-size:15px;color:var(--muted);max-width:560px;margin:20px auto 0;line-height:1.8" class="reveal reveal-delay-2">Jadikan brand Anda bagian dari ekspedisi sinematik yang menjangkau ribuan penggemar alam bebas di seluruh Indonesia.</p>
+  </div>
+
+  <div class="sponsor-packages reveal">
+    <div class="pkg-card">
+      <div class="pkg-tier">Micro</div>
+      <div class="pkg-name">STARTER</div>
+      <div class="pkg-price"><sub>Mulai</sub> Rp 500K</div>
+      <ul class="pkg-perks">
+        <li>1x Instagram Story Ads</li>
+        <li>Mention di caption konten</li>
+        <li>Logo kecil di poster digital</li>
+        <li>Laporan insights dasar</li>
+      </ul>
+      <button class="btn-pkg" onclick="selectPackage('Starter','500000')">Pilih Paket Ini</button>
+    </div>
+    <div class="pkg-card featured">
+      <div class="pkg-badge">Paling Populer</div>
+      <div class="pkg-tier">Premium</div>
+      <div class="pkg-name">BRONZE</div>
+      <div class="pkg-price"><sub>Mulai</sub> Rp 3,5M</div>
+      <ul class="pkg-perks">
+        <li>3x Instagram Story Bundle</li>
+        <li>Logo di 2 seri gunung penuh</li>
+        <li>Penempatan logo di video teaser</li>
+        <li>Fitur khusus dalam 1 konten highlight</li>
+        <li>Laporan insights lengkap</li>
+      </ul>
+      <button class="btn-pkg" onclick="selectPackage('Bronze','3500000')">Pilih Paket Ini</button>
+    </div>
+    <div class="pkg-card">
+      <div class="pkg-tier">Ultimate</div>
+      <div class="pkg-name">SILVER</div>
+      <div class="pkg-price"><sub>Mulai</sub> Rp 7M</div>
+      <ul class="pkg-perks">
+        <li>Semua benefit Bronze</li>
+        <li>Logo banner poster utama ukuran L</li>
+        <li>Branded content 1 video penuh</li>
+        <li>Mention di bio sosmed 1 bulan</li>
+        <li>Sertifikat kemitraan resmi</li>
+        <li>Prioritas di semua ekspedisi</li>
+      </ul>
+      <button class="btn-pkg" onclick="selectPackage('Silver','7000000')">Pilih Paket Ini</button>
+    </div>
+  </div>
+
+  <!-- CUSTOM CALCULATOR -->
+  <div class="calc-section reveal">
+    <div class="calc-title">// Kalkulator Kemitraan Custom — Pilih Sesuka Anda</div>
+    <div class="calc-grid">
+      <div class="calc-items">
+        <div class="calc-item" onclick="toggleCalc(this,500000,'1x Instagram Story Ads')">
+          <div class="calc-checkbox"></div>
+          <span class="calc-item-text">1x Publikasi Instagram Story Ads</span>
+          <span class="calc-item-price">+Rp 500K</span>
+        </div>
+        <div class="calc-item" onclick="toggleCalc(this,750000,'Logo di Video Teaser')">
+          <div class="calc-checkbox"></div>
+          <span class="calc-item-text">Penempatan Logo di Video Teaser Resmi</span>
+          <span class="calc-item-price">+Rp 750K</span>
+        </div>
+        <div class="calc-item" onclick="toggleCalc(this,1000000,'3x Instagram Story Bundle')">
+          <div class="calc-checkbox"></div>
+          <span class="calc-item-text">3x Instagram Story Ads Bundle</span>
+          <span class="calc-item-price">+Rp 1M</span>
+        </div>
+        <div class="calc-item" onclick="toggleCalc(this,1250000,'Logo Poster Utama Ukuran S')">
+          <div class="calc-checkbox"></div>
+          <span class="calc-item-text">Logo Brand pada Banner Poster Utama (S)</span>
+          <span class="calc-item-price">+Rp 1,25M</span>
+        </div>
+        <div class="calc-item" onclick="toggleCalc(this,3000000,'Paket Bronze Komplit 2 Gunung')">
+          <div class="calc-checkbox"></div>
+          <span class="calc-item-text">Paket Bronze Komplit — 2 Seri Gunung</span>
+          <span class="calc-item-price">+Rp 3M</span>
+        </div>
+        <div class="calc-item" onclick="toggleCalc(this,500000,'Sertifikat Kemitraan Digital')">
+          <div class="calc-checkbox"></div>
+          <span class="calc-item-text">Sertifikat Kemitraan Resmi Digital</span>
+          <span class="calc-item-price">+Rp 500K</span>
+        </div>
+      </div>
+      <div class="calc-output">
+        <div class="calc-result-top">
+          <h4>Total Investasi</h4>
+          <div class="calc-total" id="calcTotal"><span>Rp</span> 0</div>
+          <p class="calc-selected" id="calcSelected">— Belum ada item dipilih —</p>
+        </div>
+        <button class="calc-wa" id="calcWaBtn">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 2.004C6.477 2.004 2 6.481 2 12.003c0 1.77.463 3.466 1.338 4.948L2 22l5.196-1.317A9.96 9.96 0 0 0 12 22.003c5.522 0 10-4.477 10-9.999 0-5.523-4.478-10-10.001-10zm0 18.197a8.19 8.19 0 0 1-4.175-1.143l-.3-.177-3.083.781.806-2.99-.196-.308A8.19 8.19 0 0 1 3.805 12c0-4.519 3.677-8.196 8.194-8.196 4.518 0 8.196 3.677 8.196 8.196 0 4.518-3.678 8.197-8.196 8.197z"/></svg>
+          Kirim Ajuan via WhatsApp
         </button>
-        <nav id="nav-menu">
-            <a href="#home" class="nav-link">Beranda</a>
-            <a href="#about" class="nav-link">Tentang Kami</a>
-            <a href="#timeline" class="nav-link">Jalur Ekspedisi</a>
-            <a href="#gallery" class="nav-link">Galeri</a>
-            <a href="#sponsorship" class="nav-link">Sponsor</a>
-        </nav>
-    </header>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <section class="hero" id="home">
-        <h1>Mirror Summit</h1>
-        <h2>Reflecting the Peak</h2>
-        <p>Eksplorasi kreativitas visual, dokumentasi outdoor estetik, dan ruang kolaborasi inovatif di puncak alam terbuka melalui medium lensa cermin cembung.</p>
-        <a href="#sponsorship" class="btn-sponsor">Mulai Kemitraan</a>
-
-        <div class="social-float">
-            <a href="https://www.instagram.com/pendakimirror/" target="_blank">Instagram</a>
-            <a href="https://www.tiktok.com/@pendaki.mirror" target="_blank">TikTok</a>
+<!-- ▸ TESTIMONI -->
+<section id="testimoni">
+  <div class="section-label reveal">Kata Mereka</div>
+  <h2 class="section-title reveal reveal-delay-1">TESTIMONI<br>MITRA</h2>
+  <div class="testimony-wrap reveal" style="margin-top:40px">
+    <div class="testimony-card">
+      <p class="testimony-quote">"Kolaborasi dengan Pendaki Mirror memberi brand kami eksposur yang autentik di kalangan pecinta outdoor. Konten mereka sangat estetik dan engaging."</p>
+      <div class="testimony-author">
+        <div class="author-avatar">AR</div>
+        <div>
+          <div class="author-name">Andi Rahmawan</div>
+          <div class="author-role">Brand Manager — OutdoorCo</div>
         </div>
-    </section>
-
-    <section id="about">
-        <h2 class="section-title">Tentang Kami</h2>
-        <div class="about-container">
-            <div class="about-text">
-                <p>Pendaki Mirror adalah komunitas pendaki modern yang lahir dari keselarasan antara semangat eksplorasi alam, kebersamaan, dan kreativitas visual digital.</p>
-                <p>Kami tidak bergerak dalam aktivitas pendakian tradisional biasa, melainkan memadukan unsur seni, edukasi, dan dokumentasi sinematik yang kuat. Membawa media <strong>convex mirror</strong> ke puncak tertinggi adalah identitas kami dalam merefleksikan harmoni ikatan manusia dengan alam bebas.</p>
-            </div>
-            <div class="vision-mission">
-                <div class="glass-card">
-                    <h3>Visi</h3>
-                    <p style="margin: 0;">Menjadi wadah eksplorasi outdoor kreatif berskala nasional yang mengedepankan keamanan berkegiatan serta produksi karya visual bernilai seni tinggi.</p>
-                </div>
-                <div class="glass-card">
-                    <h3>Misi</h3>
-                    <ul>
-                        <li>Mengembangkan manajemen perjalanan pendakian yang aman dan terencana.</li>
-                        <li>Memproduksi konten kreatif estetik berbasis media refleksi cermin cembung.</li>
-                        <li>Menerapkan prinsip pelestarian alam lingkungan berkelanjutan (Leave No Trace).</li>
-                    </ul>
-                </div>
-            </div>
+      </div>
+    </div>
+    <div class="testimony-card">
+      <p class="testimony-quote">"Visual mirror lens yang mereka ciptakan benar-benar unik dan berbeda. Kami mendapat ratusan pertanyaan dari followers mereka dalam 24 jam pertama."</p>
+      <div class="testimony-author">
+        <div class="author-avatar">SK</div>
+        <div>
+          <div class="author-name">Sari Kusuma</div>
+          <div class="author-role">Marketing — GearUp Indonesia</div>
         </div>
-    </section>
-
-    <section id="timeline">
-        <h2 class="section-title">Jalur Ekspedisi 2026</h2>
-        <p class="timeline-desc">Rangkaian peta rute perjalanan tim pendakian kreatif dalam membelah kabut dan merefleksikan keindahan puncak-puncak gunung ikonik di Indonesia.</p>
-        
-        <div class="table-responsive">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Gunung Eksplorasi</th>
-                        <th>Wilayah Lokasi</th>
-                        <th>Estimasi Ketinggian</th>
-                        <th>Status Progress</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>Mt. Papandayan</strong></td>
-                        <td>Garut, Jawa Barat</td>
-                        <td>2.665 mdpl</td>
-                        <td><span class="badge badge-completed">✅ Selesai</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Mt. Ciremai</strong></td>
-                        <td>Kuningan, Jawa Barat</td>
-                        <td>3.078 mdpl</td>
-                        <td><span class="badge badge-completed">✅ Selesai</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Mt. Gede</strong></td>
-                        <td>Cianjur, Jawa Barat</td>
-                        <td>2.958 mdpl</td>
-                        <td><span class="badge badge-next">⏳ 27-28 Juni 2026</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Mt. Cikuray</strong></td>
-                        <td>Garut, Jawa Barat</td>
-                        <td>2.821 mdpl</td>
-                        <td><span class="badge badge-upcoming">🔒 Rencana</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Mt. Prau</strong></td>
-                        <td>Wonosobo, Jawa Tengah</td>
-                        <td>2.590 mdpl</td>
-                        <td><span class="badge badge-upcoming">🔒 Rencana</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Mt. Slamet</strong></td>
-                        <td>Purbalingga, Jawa Tengah</td>
-                        <td>3.428 mdpl</td>
-                        <td><span class="badge badge-upcoming">🔒 Rencana</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Mt. Merbabu</strong></td>
-                        <td>Boyolali, Jawa Tengah</td>
-                        <td>3.142 mdpl</td>
-                        <td><span class="badge badge-upcoming">🔒 Rencana</span></td>
-                    </tr>
-                </tbody>
-            </table>
+      </div>
+    </div>
+    <div class="testimony-card">
+      <p class="testimony-quote">"Tim yang profesional, dokumentasi berkualitas tinggi, dan reach yang sangat relevan untuk target pasar kami. Sangat rekomendasikan!"</p>
+      <div class="testimony-author">
+        <div class="author-avatar">BH</div>
+        <div>
+          <div class="author-name">Budi Hartono</div>
+          <div class="author-role">CEO — Summit Gear Co.</div>
         </div>
-    </section>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <section id="gallery">
-        <h2 class="section-title">Eksplorasi Galeri</h2>
-        <div class="gallery-grid">
-            <div class="gallery-item">
-                <div class="mirror-lens">
-                    <h4>Visual Refleksi</h4>
-                    <p>Instagram Konten</p>
-                </div>
-            </div>
-            <div class="gallery-item">
-                <div class="mirror-lens">
-                    <h4>Sinematik</h4>
-                    <p>TikTok Reels</p>
-                </div>
-            </div>
-            <div class="gallery-item">
-                <div class="mirror-lens">
-                    <h4>Dokumentasi</h4>
-                    <p>Komunitas</p>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- ▸ FAQ -->
+<section style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <div class="section-label reveal">Pertanyaan Umum</div>
+  <h2 class="section-title reveal reveal-delay-1">FAQ</h2>
+  <div class="faq-list reveal" style="margin-top:40px">
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        Apakah ada minimum periode kemitraan?
+        <div class="faq-icon">+</div>
+      </div>
+      <div class="faq-a">Tidak ada minimum periode. Anda bisa memilih paket per ekspedisi (single gunung) atau bundle multi-ekspedisi sesuai kebutuhan brand Anda.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        Bagaimana format laporan yang diberikan setelah kampanye?
+        <div class="faq-icon">+</div>
+      </div>
+      <div class="faq-a">Kami menyediakan laporan lengkap berisi reach, impressions, engagement rate, screenshot insights, dan dokumentasi penempatan logo/brand. Laporan dikirim dalam 7 hari kerja pasca ekspedisi.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        Apakah bisa request konten custom atau branded content?
+        <div class="faq-icon">+</div>
+      </div>
+      <div class="faq-a">Tentu bisa! Branded content tersedia di paket Silver ke atas, atau bisa dikustomisasi tersendiri dengan menghubungi tim kami via WhatsApp untuk berdiskusi kebutuhan spesifik brand Anda.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        Kapan pembayaran harus dilakukan?
+        <div class="faq-icon">+</div>
+      </div>
+      <div class="faq-a">Pembayaran dilakukan 50% di awal sebelum ekspedisi dimulai, dan 50% setelah laporan kampanye diserahkan. Kami menerima transfer bank, QRIS, dan dompet digital.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        Apakah tersedia paket untuk brand di luar Jawa?
+        <div class="faq-icon">+</div>
+      </div>
+      <div class="faq-a">Ya! Semua paket digital (Story Ads, penempatan logo digital) berlaku nasional tanpa batasan lokasi. Untuk ekspedisi luar Jawa, silakan diskusikan dengan tim kami.</div>
+    </div>
+  </div>
+</section>
 
-    <section id="sponsorship">
-        <h2 class="section-title">Kemitraan & Sponsor</h2>
-        <p class="timeline-desc">Pilih target penempatan promosi digital marketing sesuai profil brand Anda menggunakan sistem simulasi kalkulator interaktif di bawah ini.</p>
-        
-        <div class="sponsor-box">
-            <div class="calc-options">
-                <h3>Pilih Kebutuhan Promosi Brand Anda:</h3>
-                <div class="checkbox-group">
-                    <label class="check-item">
-                        <input type="checkbox" class="benefit-check" value="500000" data-name="1x Instagram Story Ads">
-                        <span class="checkmark"></span>
-                        <span class="check-text">1x Publikasi Iklan Instagram Story Ads (+Rp 500k)</span>
-                    </label>
-                    <label class="check-item">
-                        <input type="checkbox" class="benefit-check" value="750000" data-name="Logo di Video Teaser">
-                        <span class="checkmark"></span>
-                        <span class="check-text">Penempatan Logo Khusus di Video Teaser Resmi (+Rp 750k)</span>
-                    </label>
-                    <label class="check-item">
-                        <input type="checkbox" class="benefit-check" value="1000000" data-name="3x Instagram Story Bundle">
-                        <span class="checkmark"></span>
-                        <span class="check-text">3x Instagram Story Ads Bundle (+Rp 1M)</span>
-                    </label>
-                    <label class="check-item">
-                        <input type="checkbox" class="benefit-check" value="1250000" data-name="Logo S di Poster Utama">
-                        <span class="checkmark"></span>
-                        <span class="check-text">Penempatan Logo Brand pada Banner Poster Utama (Ukuran S) (+Rp 1.25M)</span>
-                    </label>
-                    <label class="check-item">
-                        <input type="checkbox" class="benefit-check" value="3000000" data-name="Bronze Package (2 Gunung)">
-                        <span class="checkmark"></span>
-                        <span class="check-text">Paket Komplit Bronze — Kampanye Penuh di 2 Seri Gunung (+Rp 3M)</span>
-                    </label>
-                </div>
-            </div>
+<!-- ▸ FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <span class="logo">PENDAKI <span>MIRROR</span></span>
+      <p>Menyatukan seni visual lensa cembung dengan megahnya cakrawala Indonesia. Kolaborasi cerdas, dokumentasi organik estetik berkualitas tinggi.</p>
+      <div class="footer-social">
+        <a href="https://www.instagram.com/pendakimirror/" target="_blank">IG</a>
+        <a href="https://www.tiktok.com/@pendaki.mirror" target="_blank">TT</a>
+        <a href="https://wa.me/6289656267652" target="_blank">WA</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h5>Navigasi</h5>
+      <a href="#home">Beranda</a>
+      <a href="#tentang">Tentang Kami</a>
+      <a href="#ekspedisi">Jalur Ekspedisi</a>
+      <a href="#galeri">Galeri</a>
+      <a href="#sponsor">Kemitraan</a>
+    </div>
+    <div class="footer-col">
+      <h5>Kontak</h5>
+      <a href="#">📍 Bandung, Jawa Barat</a>
+      <a href="https://wa.me/6289656267652" target="_blank">📞 0896-5626-7652</a>
+      <a href="https://www.instagram.com/pendakimirror/" target="_blank">📸 @pendakimirror</a>
+      <a href="https://www.tiktok.com/@pendaki.mirror" target="_blank">🎵 @pendaki.mirror</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 PENDAKI MIRROR — ALL RIGHTS RESERVED</span>
+    <span>REFLECTING THE PEAK</span>
+  </div>
+</footer>
 
-            <div class="calc-result">
-                <h4>Rekomendasi Paket Kerja Sama</h4>
-                <div class="package-name" id="pkg-title">Custom</div>
-                <div class="package-price" id="pkg-price">Rp 0</div>
-                <div class="package-benefits-preview" id="pkg-list">Belum ada item promosi yang dipilih.</div>
-                <button class="btn-calc-wa" id="send-wa-btn">Kirim Ajuan Via WhatsApp</button>
-            </div>
-        </div>
-    </section>
+<script>
+// ── LOADER
+window.addEventListener('load',()=>{
+  setTimeout(()=>{
+    const l=document.getElementById('loader');
+    l.style.opacity='0';
+    setTimeout(()=>l.style.display='none',600);
+    animateCounters();
+  },1600);
+});
 
-    <footer>
-        <div class="footer-grid">
-            <div class="footer-info">
-                <h3>Pendaki Mirror</h3>
-                <p>Menyatukan seni visual lensa cembung dengan megahnya cakrawala Indonesia. Kolaborasi cerdas, dokumentasi organik estetik berkualitas tinggi.</p>
-            </div>
-            <div class="footer-contacts">
-                <a href="#" class="contact-item"><span>📍</span> Kota Bandung, Jawa Barat, Indonesia</a>
-                <a href="https://wa.me/6289656267651" target="_blank" class="contact-item"><span>📞</span> 0896-5626-7651 (Hotline Kemitraan)</a>
-                <a href="https://www.instagram.com/pendakimirror/" target="_blank" class="contact-item"><span>📸</span> @pendakimirror</a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <div>&copy; 2026 Pendaki Mirror. All Rights Reserved.</div>
-            <div>Reflecting the Peak</div>
-        </div>
-    </footer>
+// ── CUSTOM CURSOR
+const cur=document.getElementById('cursor');
+const ring=document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+function animateRing(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animateRing)}
+animateRing();
+document.querySelectorAll('a,button,.calc-item,.exp-item,.faq-q,.gallery-item').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.width='24px';cur.style.height='24px';ring.style.width='54px';ring.style.height='54px'});
+  el.addEventListener('mouseleave',()=>{cur.style.width='12px';cur.style.height='12px';ring.style.width='36px';ring.style.height='36px'});
+});
 
-    <script>
-        // Fitur 1: Logika Hamburger Menu Klik di HP
-        const mobileMenuBtn = document.getElementById('mobile-menu');
-        const navMenu = document.getElementById('nav-menu');
+// ── HEADER SCROLL
+const hdr=document.getElementById('header');
+window.addEventListener('scroll',()=>{
+  hdr.classList.toggle('scrolled',window.scrollY>50);
+  document.getElementById('back-top').classList.toggle('show',window.scrollY>400);
+});
 
-        mobileMenuBtn.addEventListener('click', () => {
-            navMenu.classList.toggle('active');
-        });
+// ── HAMBURGER
+const ham=document.getElementById('hamburger');
+const mob=document.getElementById('mobileNav');
+ham.addEventListener('click',()=>{ham.classList.toggle('open');mob.classList.toggle('active')});
+document.querySelectorAll('.mobile-link').forEach(a=>a.addEventListener('click',()=>{ham.classList.remove('open');mob.classList.remove('active')}));
 
-        // Tutup menu otomatis jika salah satu link navigasi diklik (khusus HP)
-        const navLinks = document.querySelectorAll('.nav-link');
-        navLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                navMenu.classList.remove('active');
-            });
-        });
+// ── SCROLLSPY
+const navLinks=document.querySelectorAll('.nav-link');
+const sections=document.querySelectorAll('section[id]');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  sections.forEach(s=>{if(window.scrollY>=s.offsetTop-200)cur=s.id});
+  navLinks.forEach(l=>{l.classList.toggle('active',l.getAttribute('href')==='#'+cur)});
+});
 
-        // Fitur 2: Sistem Otomatisasi Kalkulator Kemitraan
-        const checkboxes = document.querySelectorAll('.benefit-check');
-        const priceDisplay = document.getElementById('pkg-price');
-        const titleDisplay = document.getElementById('pkg-title');
-        const listDisplay = document.getElementById('pkg-list');
-        const waButton = document.getElementById('send-wa-btn');
+// ── REVEAL ON SCROLL
+const reveals=document.querySelectorAll('.reveal');
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+},{threshold:0.1,rootMargin:'0px 0px -50px 0px'});
+reveals.forEach(r=>obs.observe(r));
 
-        function updateSponsorshipCalculator() {
-            let totalCost = 0;
-            let selectedItems = [];
+// ── PROGRESS BAR ANIMATION
+function animateProgress(){
+  const bar=document.getElementById('progressBar');
+  if(!bar)return;
+  const barObs=new IntersectionObserver(entries=>{
+    if(entries[0].isIntersecting){bar.style.width='28.6%';barObs.disconnect()}
+  },{threshold:0.5});
+  barObs.observe(bar);
+}
+animateProgress();
 
-            checkboxes.forEach(box => {
-                if(box.checked) {
-                    totalCost += parseInt(box.value);
-                    selectedItems.push(box.getAttribute('data-name'));
-                }
-            });
+// ── COUNTER ANIMATION
+function animateCounters(){
+  document.querySelectorAll('.stat-num[data-target]').forEach(el=>{
+    const target=parseInt(el.dataset.target);
+    let current=0;
+    const step=Math.ceil(target/60);
+    const timer=setInterval(()=>{
+      current=Math.min(current+step,target);
+      el.textContent=current.toLocaleString('id-ID');
+      if(current>=target)clearInterval(timer);
+    },24);
+  });
+}
 
-            priceDisplay.innerText = "Rp " + totalCost.toLocaleString('id-ID');
+// ── FAQ TOGGLE
+function toggleFaq(el){
+  const item=el.parentElement;
+  const allItems=document.querySelectorAll('.faq-item');
+  allItems.forEach(i=>{if(i!==item)i.classList.remove('open')});
+  item.classList.toggle('open');
+}
 
-            if (totalCost === 0) {
-                titleDisplay.innerText = "Custom";
-                listDisplay.innerText = "Belum ada item promosi yang dipilih.";
-            } else if (totalCost >= 3000000) {
-                titleDisplay.innerText = "Bronze Tier+";
-                listDisplay.innerText = "Item Terpilih: " + selectedItems.join(', ');
-            } else if (totalCost >= 1250000) {
-                titleDisplay.innerText = "Micro Premium";
-                listDisplay.innerText = "Item Terpilih: " + selectedItems.join(', ');
-            } else {
-                titleDisplay.innerText = "Micro Taktis";
-                listDisplay.innerText = "Item Terpilih: " + selectedItems.join(', ');
-            }
-        }
+// ── CALCULATOR
+let calcTotal=0;
+let selectedItems=[];
+function toggleCalc(el,price,name){
+  const cb=el.querySelector('.calc-checkbox');
+  const isChecked=cb.classList.contains('checked');
+  if(isChecked){cb.classList.remove('checked');calcTotal-=price;selectedItems=selectedItems.filter(i=>i!==name)}
+  else{cb.classList.add('checked');calcTotal+=price;selectedItems.push(name)}
+  document.getElementById('calcTotal').innerHTML='<span>Rp</span> '+calcTotal.toLocaleString('id-ID');
+  document.getElementById('calcSelected').textContent=selectedItems.length?'• '+selectedItems.join('\n• '):'— Belum ada item dipilih —';
+}
 
-        checkboxes.forEach(box => {
-            box.addEventListener('change', updateSponsorshipCalculator);
-        });
+// ── WA BUTTON (CALCULATOR)
+document.getElementById('calcWaBtn').addEventListener('click',()=>{
+  if(calcTotal===0){showToast('Pilih minimal satu item promosi terlebih dahulu.');return}
+  const msg=`Halo Admin Pendaki Mirror!%0A%0ASaya tertarik menjadi mitra sponsor.%0A%0A*Rincian Pilihan:*%0A${selectedItems.map(i=>'• '+i).join('%0A')}%0A%0A*Total Investasi: Rp ${calcTotal.toLocaleString('id-ID')}*%0A%0AMohon info kelanjutan teknis kerja samanya. Terima kasih!`;
+  window.open('https://wa.me/6289656267652?text='+msg,'_blank');
+});
 
-        // Fitur 3: Pengirim Formulir via Integrasi WhatsApp Otomatis
-        waButton.addEventListener('click', function() {
-            let totalCost = priceDisplay.innerText;
-            let tierName = titleDisplay.innerText;
-            let itemsText = listDisplay.innerText;
+// ── PACKAGE SELECT
+function selectPackage(name,price){
+  const msg=`Halo Admin Pendaki Mirror!%0A%0ASaya tertarik dengan *Paket ${name}* (Rp ${parseInt(price).toLocaleString('id-ID')}).%0A%0AMohon informasikan kelanjutan teknis kerja samanya. Terima kasih!`;
+  window.open('https://wa.me/6289656267652?text='+msg,'_blank');
+}
 
-            if(totalCost === "Rp 0") {
-                alert("Silakan pilih minimal satu item promosi terlebih dahulu!");
-                return;
-            }
-
-            let textMessage = `Halo Admin Pendaki Mirror, kami tertarik menjadi mitra sponsor.%0A%0A` +
-                              `• Rekomendasi Paket: *${tierName}*%0A` +
-                              `• Total Nilai Investasi: *${totalCost}*%0A` +
-                              `• ${itemsText}%0A%0A` +
-                              `Mohon informasikan kelanjutan teknis kerja samanya. Terima kasih!`;
-
-            window.open(`https://wa.me/6289656267651?text=${textMessage}`, '_blank');
-        });
-
-        // Fitur 4: ScrollSpy - Deteksi Posisi Menu Aktif Saat Di-scroll
-        const sections = document.querySelectorAll('section');
-        window.addEventListener('scroll', () => {
-            let current = '';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                if (pageYOffset >= (sectionTop - 220)) {
-                    current = section.getAttribute('id');
-                }
-            });
-
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href').includes(current)) {
-                    link.classList.add('active');
-                }
-            });
-        });
-    </script>
+// ── TOAST
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3500);
+}
+</script>
 </body>
 </html>
